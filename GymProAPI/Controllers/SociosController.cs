@@ -152,5 +152,40 @@ namespace GymProAPI.Controllers
         {
             return _context.Socios.Any(e => e.SocioID == id);
         }
+
+        // 🔍 GET: api/socios/buscar?query=algo
+        [HttpGet("buscar")]
+        public async Task<ActionResult<IEnumerable<Socio>>> BuscarSocios([FromQuery] string query)
+        {
+            try
+            {
+                Console.WriteLine($"🔍 Buscando socios con query: {query}");
+
+                if (string.IsNullOrWhiteSpace(query))
+                    return BadRequest("La búsqueda no puede estar vacía.");
+
+                query = query.Trim().ToLower();
+
+                var socios = await _context.Socios
+                    .Where(s => s.ActivoInactivo &&
+    (
+        s.SocioID.ToString().Contains(query) ||
+        s.Nombre.ToLower().Contains(query) ||
+        s.ApellidoPaterno.ToLower().Contains(query) ||
+        s.ApellidoMaterno.ToLower().Contains(query) ||
+        s.Email.ToLower().Contains(query)
+    ))
+                    .ToListAsync();
+
+                socios.ForEach(EvaluarEstadoDePago);
+                return socios;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"🔥 ERROR en BuscarSocios: {ex.Message}");
+                return StatusCode(500, $"Error interno: {ex.Message}");
+            }
+        }
     }
+
 }

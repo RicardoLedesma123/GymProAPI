@@ -12,5 +12,6 @@
         public DateTime? FechaPago { get; set; }
         public bool AlCorriente { get; set; }
         public string? FotoUrl { get; set; }
+        public string Email { get; set; } = string.Empty;
     }
 }
