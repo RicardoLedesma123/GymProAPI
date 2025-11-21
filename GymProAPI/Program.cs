@@ -1,4 +1,5 @@
 ﻿using GymProAPI.Data;
+using GymProAPI.Services; // 👈 importa tu servicio
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,9 @@ builder.Services.AddCors(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// 👇 Aquí registra tu servicio de correo ANTES de Build()
+builder.Services.AddSingleton<EmailService>();
+
 var app = builder.Build();
 
 // 🔧 Middleware
@@ -41,4 +45,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-

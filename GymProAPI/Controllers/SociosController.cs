@@ -22,7 +22,6 @@ namespace GymProAPI.Controllers
             socio.AlCorriente = socio.FechaPago >= DateTime.Today;
         }
 
-        // ✅ GET: api/socios (solo activos)
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Socio>>> GetSocios()
         {
@@ -105,15 +104,28 @@ namespace GymProAPI.Controllers
             return CreatedAtAction(nameof(GetSocio), new { id = socio.SocioID }, socio);
         }
 
-        // ✅ PUT: api/socios/5 (actualización)
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSocio(int id, Socio socio)
+        public async Task<IActionResult> PutSocio(int id, Socio socioNuevo)
         {
-            if (id != socio.SocioID)
+            if (id != socioNuevo.SocioID)
                 return BadRequest("ID de socio no coincide.");
 
+            var socio = await _context.Socios.FindAsync(id);
+            if (socio == null)
+                return NotFound();
+
+            // Si estaba inactivo y ahora se habilita
+            if (!socio.ActivoInactivo && socioNuevo.ActivoInactivo)
+            {
+                socio.FechaRegistro = DateTime.Now;
+                socio.FechaPago = socio.FechaRegistro.AddMonths(1);
+            }
+
+            // Actualizar todos los demás campos automáticamente
+            _context.Entry(socio).CurrentValues.SetValues(socioNuevo);
+
+            // Re-evaluar estado de pago
             EvaluarEstadoDePago(socio);
-            _context.Entry(socio).State = EntityState.Modified;
 
             try
             {

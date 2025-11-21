@@ -13,5 +13,8 @@
         public bool AlCorriente { get; set; }
         public string? FotoUrl { get; set; }
         public string Email { get; set; } = string.Empty;
+
+        public ICollection<Pago> Pagos { get; set; } = new List<Pago>();
+
     }
 }
