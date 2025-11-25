@@ -1,13 +1,14 @@
 ﻿using GymProAPI.Data;
-using GymProAPI.Services; // 👈 importa tu servicio
+using GymProAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔧 Servicios
+//  Servicios
 builder.Services.AddControllers();
 builder.Services.AddDbContext<GymDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 builder.Services.AddCors(options =>
 {
@@ -22,12 +23,12 @@ builder.Services.AddCors(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 👇 Aquí registra tu servicio de correo ANTES de Build()
+//  Aquí registra el servicio de correo ANTES de Build()
 builder.Services.AddSingleton<EmailService>();
 
 var app = builder.Build();
 
-// 🔧 Middleware
+//  Middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -36,7 +37,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// 🔐 Activar CORS antes de Authorization
+//  Activar CORS antes de Authorization
 app.UseCors("AllowAngular");
 app.UseStaticFiles();
 
@@ -45,3 +46,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+

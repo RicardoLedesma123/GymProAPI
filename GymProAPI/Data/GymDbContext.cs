@@ -1,5 +1,6 @@
 ﻿using GymProAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using static GymProAPI.Models.BajasPorMes;
 
 namespace GymProAPI.Data
 {
@@ -9,7 +10,7 @@ namespace GymProAPI.Data
 
         public DbSet<Socio> Socios { get; set; }
         public DbSet<Pago> Pagos { get; set; }
-
+        public DbSet<BajasPorMes> BajasPorMes { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Socios
@@ -25,7 +26,7 @@ namespace GymProAPI.Data
             // Relación: un socio tiene muchos pagos
             modelBuilder.Entity<Pago>()
                 .HasOne(p => p.Socio)
-                .WithMany(s => s.Pagos) // 👈 ahora sí existe
+                .WithMany(s => s.Pagos)
                 .HasForeignKey(p => p.SocioID)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -38,6 +39,9 @@ namespace GymProAPI.Data
             modelBuilder.Entity<Pago>()
                 .Property(p => p.Monto)
                 .HasColumnType("decimal(10,2)");
+
+            // Estadisticas
+            modelBuilder.Entity<BajasPorMes>().HasNoKey();
         }
     }
 }
