@@ -24,5 +24,35 @@ namespace GymProAPI.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("pagos-por-mes")]
+        public async Task<IActionResult> GetPagosPorMes()
+        {
+            var result = await _context.PagosPorMes
+                .FromSqlRaw("EXEC GetPagosPorMes")
+                .ToListAsync();
+
+            return Ok(result);
+        }
+
+        [HttpGet("socios-activos")]
+        public async Task<IActionResult> GetSociosActivos()
+        {
+            var result = await _context.SociosActivos
+                .FromSqlRaw("EXEC GetSociosActivos")
+                .ToListAsync();
+
+            return Ok(result);
+        }
+
+        [HttpGet("altas-por-mes")]
+        public async Task<IActionResult> GetAltasPorMes()
+        {
+            var result = await _context.AltasPorMes
+                .FromSqlRaw("EXEC GetAltasPorMes")
+                .ToListAsync();
+
+            return Ok(result);
+        }
     }
 }

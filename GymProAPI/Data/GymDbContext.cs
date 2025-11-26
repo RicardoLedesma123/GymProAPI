@@ -11,6 +11,10 @@ namespace GymProAPI.Data
         public DbSet<Socio> Socios { get; set; }
         public DbSet<Pago> Pagos { get; set; }
         public DbSet<BajasPorMes> BajasPorMes { get; set; }
+        public DbSet<PagosPorMes> PagosPorMes { get; set; }
+        public DbSet<SociosActivos> SociosActivos { get; set; }
+        public DbSet<AltasPorMes> AltasPorMes { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Socios
@@ -40,8 +44,19 @@ namespace GymProAPI.Data
                 .Property(p => p.Monto)
                 .HasColumnType("decimal(10,2)");
 
-            // Estadisticas
+            // Estadisticas, bajas por mes
             modelBuilder.Entity<BajasPorMes>().HasNoKey();
+
+            //Estadisticas, pagos por mes
+            modelBuilder.Entity<PagosPorMes>().HasNoKey();
+
+            //Estadisticas, socios activos
+            modelBuilder.Entity<SociosActivos>().HasNoKey();
+
+            //Estadisticas, altas por  mes
+            modelBuilder.Entity<AltasPorMes>().HasNoKey();
+
+
         }
     }
 }
