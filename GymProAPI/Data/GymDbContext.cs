@@ -14,6 +14,7 @@ namespace GymProAPI.Data
         public DbSet<PagosPorMes> PagosPorMes { get; set; }
         public DbSet<SociosActivos> SociosActivos { get; set; }
         public DbSet<AltasPorMes> AltasPorMes { get; set; }
+        public DbSet<HorarioPersonal> HorarioPersonal { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
