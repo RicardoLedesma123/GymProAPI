@@ -1,5 +1,8 @@
-﻿using GymProAPI.Data;
+﻿using System;
+using BCrypt.Net;
+using GymProAPI.Data;
 using GymProAPI.Services;
+using GymProAPI.Servicios;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +28,7 @@ builder.Services.AddSwaggerGen();
 
 //  Aquí registra el servicio de correo ANTES de Build()
 builder.Services.AddSingleton<EmailService>();
+builder.Services.AddScoped<JwtService>();
 
 var app = builder.Build();
 
@@ -35,7 +39,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 //  Activar CORS antes de Authorization
 app.UseCors("AllowAngular");
@@ -46,4 +50,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
 

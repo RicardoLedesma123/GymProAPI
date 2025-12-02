@@ -15,6 +15,10 @@ namespace GymProAPI.Data
         public DbSet<SociosActivos> SociosActivos { get; set; }
         public DbSet<AltasPorMes> AltasPorMes { get; set; }
         public DbSet<HorarioPersonal> HorarioPersonal { get; set; }
+        public DbSet<Producto> Productos { get; set; }
+        public DbSet<MovimientoInventario> MovimientosInventario { get; set; }
+        public DbSet<User> Users { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
