@@ -22,13 +22,17 @@ namespace GymProAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] Login dto)
         {
+            // Buscar el usuario por Username
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == dto.Username);
 
+            // Validar existencia y contraseña
             if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
                 return Unauthorized("Credenciales inválidas");
 
-
+            // Generar token usando el objeto User
             var token = _jwtService.GenerateToken(user);
+
+            // Devolver token al cliente
             return Ok(new { token });
         }
 

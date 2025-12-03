@@ -1,4 +1,5 @@
-﻿using GymProAPI.Data;
+﻿using System.ComponentModel;
+using GymProAPI.Data;
 using GymProAPI.Models;
 using GymProAPI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -45,17 +46,17 @@ namespace GymProAPI.Controllers
             // Guardar el pago
             pago.SocioID = socioID;
             pago.FechaRegistro = DateTime.Now;
-
             _context.Pagos.Add(pago);
-            await _context.SaveChangesAsync();
 
             // Calcular próxima fecha de pago (día de registro, mes del pago + 1, año en curso)
             socio.FechaPago = CalcularProximaDesdeRegYMesPago(socio.FechaRegistro, pago.FechaPago);
             socio.AlCorriente = true;
-
             _context.Entry(socio).State = EntityState.Modified;
+
+            // Guardar TODO en un solo viaje a la base
             await _context.SaveChangesAsync();
 
+            // Generar HTML del comprobante
             var cuerpoHtml = $@"
 <!DOCTYPE html>
 <html>
@@ -112,10 +113,13 @@ namespace GymProAPI.Controllers
 </body>
 </html>";
 
-            _emailService.EnviarTicket(
-                socio.Email,
-                "Comprobante de Pago - GymPro",
-                cuerpoHtml
+            // Enviar correo en segundo plano para no bloquear la respuesta
+            _ = Task.Run(() =>
+                _emailService.EnviarTicket(
+                    socio.Email,
+                    "Comprobante de Pago - GymPro",
+                    cuerpoHtml
+                )
             );
 
             return CreatedAtAction(nameof(GetPagosPorSocio), new { socioID }, pago);
@@ -163,5 +167,24 @@ namespace GymProAPI.Controllers
 
             return NoContent();
         }
+
+        [HttpPost("visitas")]
+        public async Task<IActionResult> RegistrarVisita([FromBody] Visita visita)
+        {
+            _context.Visitas.Add(visita);
+            await _context.SaveChangesAsync();
+            return Ok(visita);
+        }
+
+        [HttpGet("visitas")]
+        public async Task<IActionResult> ObtenerVisitas()
+        {
+            var visitas = await _context.Visitas
+                .OrderByDescending(v => v.FechaVisita)
+                .ToListAsync();
+
+            return Ok(visitas);
+        }
+
     }
 }

@@ -18,6 +18,7 @@ namespace GymProAPI.Data
         public DbSet<Producto> Productos { get; set; }
         public DbSet<MovimientoInventario> MovimientosInventario { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Visita> Visitas { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
