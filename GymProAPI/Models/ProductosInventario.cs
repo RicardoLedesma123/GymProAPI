@@ -37,4 +37,11 @@ namespace GymProAPI.Models
         [JsonIgnore]
         public Producto? Producto { get; set; }
     }
+
+    public class GananciaProductos
+    {
+        public int Mes { get; set; }
+        public int Año { get; set; }
+        public decimal GananciaNeta { get; set; }
+    }
 }
